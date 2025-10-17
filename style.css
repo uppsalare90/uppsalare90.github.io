@@ -7,6 +7,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  flex-direction: column;
 }
 
 table {
@@ -39,11 +40,11 @@ tbody td {
 }
 
 tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #f0f2fa;
 }
 
 tbody tr:hover {
-  background-color: #eef5ff;
+  background-color: #cddceb;
 }
 
 td:nth-child(3), td:nth-child(4) {
@@ -66,4 +67,44 @@ td:nth-child(3), td:nth-child(4) {
 
 a:hover {
   text-decoration: underline;
+}
+
+.footer-text {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #666;
+  background: #f4f6f8;
+}
+
+.footer-text {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #666;
+  background: #f4f6f8;
+}
+
+#openPageBtn {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #004080;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#openPageBtn:hover {
+  background-color: #0066cc;
 }
