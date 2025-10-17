@@ -1,95 +1,116 @@
-let playerList = [];
+let playerList2 = [];
 const playerPdgaId = ["75216", "77535", "77547", "85229", "92342", "98755", "99121", "106897", "107746", "107764", "183456", "200855","259085", "289988","292238"];
 
+let playerList = [];
+
 window.onload = async () => {
-  for (const id of playerPdgaId) {
-    await fetchAndAddPlayer(id);
-  }
+  await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=91781&Division=MPO");
+  await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=91781&Division=MP40");
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=61835&Division=MPO","92342")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=61835&Division=MPO","107764")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=61835&Division=FPO","107746") 
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=51107&Division=MA2","98755")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=85113&Division=MJ18","292238")
   renderPlayerList();
 };
 
-async function fetchAndAddPlayer(playerId) {
-  console.log(playerList.length);
-  const proxyUrl = 'https://api.allorigins.win/get?url=';
-  const targetUrl = `https://www.pdga.com/player/${playerId}`;
+async function getPlayerFromTournment(url, pdgaNum) {
+      try {
+    const resp = await fetch(url, { headers: { Accept: "application/json" } });
+    if (!resp.ok) throw new Error(`Fel vid hämtning: ${resp.status}`);
 
-  try {
-    const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
-    const data = await response.json();
+    const data = await resp.json();
+    const scores = data?.data?.scores;
 
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(data.contents, 'text/html');
-
-    const nameElement = doc.querySelector('h1.page-title, h1.title');
-    const ratingElement = doc.querySelector('li.current-rating');
-
-    const name = nameElement?.textContent.trim().replace(/\s+/g, ' ');
-    
-    const ratingText = ratingElement?.textContent.trim();
-    const cleanWords = ratingText?.split(" ");
-    const rating = parseInt(cleanWords?.[2], 10);
-    
-
-  let upOrDown = '<span style="color: gray;">➖</span>';
-  const changeRaw = cleanWords?.[3];
-  const change = parseInt(changeRaw, 10);
-
-  if (!isNaN(change)) {
-    if (change > 0) {
-      upOrDown = `<span style="color: green;">⬆️ +${change}</span>`;
-    } else if (change < 0) {
-      upOrDown = `<span style="color: red;">⬇️ ${change}</span>`;
-    } else {
-      upOrDown = '➖ 0';
+    if (!Array.isArray(scores)) {
+      return null;
     }
-  } else {
-    upOrDown = '❔'; 
+
+    const player = scores.find(
+      s => String(s.PDGANum) === String(pdgaNum)
+    );
+
+    if (!player) {
+      return null;
+    }
+
+    const name = player.Name ?? player.name ?? "—";
+    const rating = player.Rating ?? player.rating ?? null;
+    const pdga = player.PDGANum ?? player.pdga_number ?? pdgaNum;
+    const total = player.Total ?? player.total ?? null;
+    const position = player.Pos ?? player.pos ?? null;
+
+    const exists = playerList.some(p => String(p.pdgaNum) === String(pdga));
+
+    if (!exists && rating && !isNaN(rating)) {
+      playerList.push({ name, pdgaNum: pdga, rating, total, position });
+    } 
+
+    return { name, pdgaNum: pdga, rating, total, position };
+  } catch (err) {
+    return null;
   }
-    
-    if (name && ratingText && !isNaN(rating)) {
-      const exists = playerList.find(player => player.name === name);
-      if (!exists) {
-        console.log("New player: " + name);
-        playerList.push({ name, rating, upOrDown, id: playerId });
-        playerList.sort((a, b) => b.rating - a.rating);
-      }
+}
+
+async function fetchTournamentPlayers(url) {
+    try {
+    const resp = await fetch(url, { headers: { Accept: "application/json" } });
+
+    if (!resp.ok) throw new Error(`Felaktig statuskod: ${resp.status}`);
+    const data = await resp.json();
+
+    const scores = data?.data?.scores;
+    if (!Array.isArray(scores) || !scores.length) {
+      return;
     }
-  } catch (error) {
-    console.error(`Error fetching player ${playerId}:`, error);
+
+for (const s of scores) {
+  const name = s.Name;
+  const pdgaNum = s.PDGANum;
+  const rating = s.Rating ?? null;
+
+  // Kolla om spelaren redan finns i listan
+  const exists = playerList.some(p => p.pdgaNum === pdgaNum);
+
+  if (!exists && rating && !isNaN(rating)) {
+    playerList.push({ name, pdgaNum, rating });
+  }
+}
+  } catch (err) {
   }
 }
 
 function renderPlayerList() {
-  const listDiv = document.getElementById('playerList');
+    playerList.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+  const listDiv = document.getElementById("playerList");
 
-  if (playerList.length === 0) {
-    listDiv.innerHTML = '<p style="color: red; font-weight: bold;">⚠️ Failed to fetch player data from PDGA. Please try again later.</p>';
+  if (!playerList.length) {
+    listDiv.innerHTML = `<p style="font-weight:bold;">⚠️ Inga spelardata hittades. Kolla konsolen (F12) för mer info.</p>`;
     return;
   }
 
-  playerList.sort((a, b) => b.rating - a.rating);
+  const rows = playerList.map((p, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td>${p.pdgaNum !== "—" ? `<a href="https://www.pdga.com/player/${p.pdgaNum}" target="_blank">${p.name}</a>` : p.name}</td>
+      <td>${p.pdgaNum?? "—"}</td>
+      <td>${p.rating ?? "—"}</td>
+    </tr>
+  `).join("");
 
-  let tableHTML = `
+  listDiv.innerHTML = `
     <table>
       <thead>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Rating</th>
-          <th>Up/Down</th>
-        </tr>
+        <tr><th>#</th><th>Name</th><th>PDGA #</th><th>Rating</th></tr>
       </thead>
-      <tbody>
-        ${playerList.map((player, index) => `
-          <tr>
-            <td>${index + 1}</td>
-            <td><a href="https://www.pdga.com/player/${player.id}" target="_blank" style="color: #004080; text-decoration: none;">${player.name}</a></td>
-            <td>${player.rating}</td>
-            <td>${player.upOrDown}</td>
-          </tr>
-        `).join('')}
-      </tbody>
+      <tbody>${rows}</tbody>
     </table>
   `;
-  listDiv.innerHTML = tableHTML;
 }
+
+const btn = document.getElementById("openPageBtn");
+if (btn) {
+  btn.addEventListener("click", () => {
+    window.location.href = "NBM.html"; 
+  });
+} 
