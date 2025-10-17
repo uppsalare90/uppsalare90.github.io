@@ -108,10 +108,3 @@ function renderPlayerList() {
     </table>
   `;
 }
-
-const btn = document.getElementById("openPageBtn");
-if (btn) {
-  btn.addEventListener("click", () => {
-    window.location.href = "nbm.html"; 
-  });
-} 
