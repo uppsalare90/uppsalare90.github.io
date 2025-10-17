@@ -1,5 +1,5 @@
 let playerList2 = [];
-const playerPdgaId = ["75216", "77535", "77547", "85229", "92342", "98755", "99121", "106897", "107746", "107764", "183456", "200855","259085", "289988","292238"];
+const playerPdgaId = ["75216", "77535", "77547", "85225", "85229", "92342", "98755", "99121", "106897", "107746", "107764", "183456", "200855","259085", "289988","292238"];
 
 let playerList = [];
 
@@ -11,6 +11,7 @@ window.onload = async () => {
   await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=61835&Division=FPO","107746") 
   await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=51107&Division=MA2","98755")
   await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=85113&Division=MJ18","292238")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=94759&Division=MA3","85225")
   renderPlayerList();
 };
 
@@ -37,16 +38,16 @@ async function getPlayerFromTournment(url, pdgaNum) {
     const name = player.Name ?? player.name ?? "—";
     const rating = player.Rating ?? player.rating ?? null;
     const pdga = player.PDGANum ?? player.pdga_number ?? pdgaNum;
-    const total = player.Total ?? player.total ?? null;
-    const position = player.Pos ?? player.pos ?? null;
 
     const exists = playerList.some(p => String(p.pdgaNum) === String(pdga));
 
-    if (!exists && rating && !isNaN(rating)) {
-      playerList.push({ name, pdgaNum: pdga, rating, total, position });
+    const isPlayerOneOfList = playerPdgaId.includes(String(pdga));    
+
+    if (!exists && isPlayerOneOfList && rating && !isNaN(rating)) {
+      playerList.push({ name, pdgaNum, rating});
     } 
 
-    return { name, pdgaNum: pdga, rating, total, position };
+    return ;
   } catch (err) {
     return null;
   }
@@ -69,13 +70,13 @@ for (const s of scores) {
   const pdgaNum = s.PDGANum;
   const rating = s.Rating ?? null;
 
-  // Kolla om spelaren redan finns i listan
-  const exists = playerList.some(p => p.pdgaNum === pdgaNum);
+    const exists = playerList.some(p => String(p.pdgaNum) === String(pdgaNum));
+    const isPlayerOneOfList = playerPdgaId.includes(String(pdgaNum));    
 
-  if (!exists && rating && !isNaN(rating)) {
-    playerList.push({ name, pdgaNum, rating });
-  }
-}
+  if (!exists && isPlayerOneOfList && rating && !isNaN(rating)) {
+    playerList.push({ name, pdgaNum, rating });  
+      }
+    }
   } catch (err) {
   }
 }
