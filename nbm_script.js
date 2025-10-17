@@ -29,11 +29,9 @@ async function fetchTournamentPlayers(url) {
       return;
     }
 
-    // Hämta division från URL
     const divisionMatch = url.match(/Division=([A-Za-z0-9]+)/);
     const division = divisionMatch ? divisionMatch[1].toUpperCase() : "";
 
-    // Kolla om division börjar med "F"
     const isFDivision = division.startsWith("F");
 
     for (const s of scores) {
