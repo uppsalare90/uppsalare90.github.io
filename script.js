@@ -111,6 +111,6 @@ function renderPlayerList() {
 const btn = document.getElementById("openPageBtn");
 if (btn) {
   btn.addEventListener("click", () => {
-    window.location.href = "NBM.html"; 
+    window.location.href = "nbm.html"; 
   });
 } 
