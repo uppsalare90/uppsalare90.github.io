@@ -1,5 +1,5 @@
 let playerList2 = [];
-const playerPdgaId = ["75216", "77535", "77547", "85225", "85229", "92342", "98755", "99121", "106897", "107746", "107764", "183456", "200855","259085", "289988","292238"];
+const playerPdgaId = ["75216", "77535", "77547", "85225", "85229", "92342", "98755", "99121", "106897", "107746", "107488", "107764","114085", "183456", "200855","220960","231698","247940","250501","253259","259085","261443", "289988","292238","324942"];
 
 let playerList = [];
 
@@ -12,6 +12,13 @@ window.onload = async () => {
   await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=51107&Division=MA2","98755")
   await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=85113&Division=MJ18","292238")
   await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=94759&Division=MA3","85225")
+    await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=103092&Division=MA4","220960")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=104367&Division=FA3","324942")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=53584&Division=MA3","107488")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=83155&Division=MA4","253259")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=70970&Division=MA4","231698")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=70970&Division=MA3","261443")
+  await getPlayerFromTournment("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=70970&Division=MA3","114085")
   renderPlayerList();
 };
 
