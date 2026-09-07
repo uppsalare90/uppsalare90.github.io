@@ -8,10 +8,12 @@ window.onload = async () => {
   await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=39561&Division=MA1");
   await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=39561&Division=MPO");
   await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=85115&Division=MA1");
+  await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=107613&Division=MPO");
 
   await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=61835&Division=FPO");
   await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=39561&Division=FPO");
   await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=85115&Division=FA1");
+  await fetchTournamentPlayers("https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=107613&Division=FPO");
 
   renderPlayerList();
     };
