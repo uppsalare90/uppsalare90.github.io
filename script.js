@@ -17,16 +17,14 @@ const requests = [
     type: "tournament",
     url: "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=91781&Division=MP40"
   },
-
   {
-    type: "player",
-    url: "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=61835&Division=MPO",
-    pdgaNum: "92342"
+    type: "tournament",
+    url: "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=107451&Division=MPO"
   },
   {
     type: "player",
     url: "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=61835&Division=MPO",
-    pdgaNum: "107764"
+    pdgaNum: "92342"
   },
   {
     type: "player",
@@ -37,16 +35,6 @@ const requests = [
     type: "player",
     url: "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=51107&Division=MA2",
     pdgaNum: "98755"
-  },
-  {
-    type: "player",
-    url: "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=85113&Division=MJ18",
-    pdgaNum: "292238"
-  },
-  {
-    type: "player",
-    url: "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=94759&Division=MA3",
-    pdgaNum: "85225"
   },
   {
     type: "player",
