@@ -73,6 +73,26 @@ body {
   background: var(--footer-bg);
 }
 
+.footer-text nav {
+  display: block;
+  white-space: nowrap;
+  overflow-x: auto;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.footer-text nav a {
+  display: inline;
+  white-space: nowrap;
+}
+
+.footer-text nav a:not(:last-child)::after {
+  content: ",";
+  margin-left: 6px;
+  margin-right: 6px;
+  color: var(--footer-text);
+}
+
 
 table {
   width: 100%;
@@ -139,6 +159,18 @@ td:nth-child(4) {
 
 a {
   color: var(--link-color);
+}
+
+.btn-flag {
+  display: inline-block;
+  width: 24px;
+  height: 15px;
+  flex: 0 0 auto;
+  border-radius: 1px;
+  background:
+    linear-gradient(to right, transparent 31.25%, #fecc00 31.25% 43.75%, transparent 43.75%),
+    linear-gradient(to bottom, transparent 40%, #fecc00 40% 60%, transparent 60%),
+    #006aa7;
 }
 
 a:hover {
@@ -375,13 +407,15 @@ h1 {
 }
 
 .player-list th:first-child, .player-list td:first-child,
-.player-list-fpo th:first-child, .player-list-fpo td:first-child { width: 12%; }
+.player-list-fpo th:first-child, .player-list-fpo td:first-child { width: 8%; }
 .player-list th:nth-child(2), .player-list td:nth-child(2),
-.player-list-fpo th:nth-child(2), .player-list-fpo td:nth-child(2) { width: 43%; }
+.player-list-fpo th:nth-child(2), .player-list-fpo td:nth-child(2) { width: 40%; }
 .player-list th:nth-child(3), .player-list td:nth-child(3),
-.player-list-fpo th:nth-child(3), .player-list-fpo td:nth-child(3) { width: 25%; text-align: right; font-variant-numeric: tabular-nums; }
+.player-list-fpo th:nth-child(3), .player-list-fpo td:nth-child(3) { width: 20%; text-align: right; font-variant-numeric: tabular-nums; }
 .player-list th:nth-child(4), .player-list td:nth-child(4),
-.player-list-fpo th:nth-child(4), .player-list-fpo td:nth-child(4) { width: 20%; text-align: right; font-variant-numeric: tabular-nums; }
+.player-list-fpo th:nth-child(4), .player-list-fpo td:nth-child(4) { width: 13%; text-align: center; font-variant-numeric: tabular-nums; }
+.player-list th:nth-child(5), .player-list td:nth-child(5),
+.player-list-fpo th:nth-child(5), .player-list-fpo td:nth-child(5) { width: 19%; text-align: right; font-variant-numeric: tabular-nums; }
 .player-list td:nth-child(2), .player-list-fpo td:nth-child(2) { overflow-wrap: anywhere; }
 
 .player-list tbody tr:nth-child(even) td,
@@ -412,6 +446,10 @@ h1 {
 .footer-text nav a { color: var(--accent); font-weight: 700; text-decoration: none; }
 .footer-text nav a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
+.ranking-filters { display: flex; justify-content: flex-end; margin-top: 20px; }
+.country-filter { display: flex; flex-direction: column; gap: 5px; min-width: 160px; color: var(--muted); font-size: 0.78rem; font-weight: 700; }
+.country-filter select { min-height: 40px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; background: var(--surface); color: var(--ink); font: inherit; }
+
 @media (max-width: 900px) {
   body { padding: 28px 16px 20px; }
   .page-header { align-items: flex-start; flex-direction: column; gap: 20px; padding-bottom: 22px; }
@@ -422,11 +460,13 @@ h1 {
   .player-list thead th, .player-list-fpo thead th { padding: 8px 4px; font-size: 0.58rem; letter-spacing: 0; }
   .player-list td, .player-list-fpo td { padding: 8px 4px; font-size: 0.7rem; }
   .player-list th:first-child, .player-list td:first-child,
-  .player-list-fpo th:first-child, .player-list-fpo td:first-child { width: 9%; }
+  .player-list-fpo th:first-child, .player-list-fpo td:first-child { width: 8%; }
   .player-list th:nth-child(2), .player-list td:nth-child(2),
-  .player-list-fpo th:nth-child(2), .player-list-fpo td:nth-child(2) { width: 44%; }
+  .player-list-fpo th:nth-child(2), .player-list-fpo td:nth-child(2) { width: 38%; }
   .player-list th:nth-child(3), .player-list td:nth-child(3),
-  .player-list-fpo th:nth-child(3), .player-list-fpo td:nth-child(3) { width: 27%; }
+  .player-list-fpo th:nth-child(3), .player-list-fpo td:nth-child(3) { width: 22%; }
   .player-list th:nth-child(4), .player-list td:nth-child(4),
-  .player-list-fpo th:nth-child(4), .player-list-fpo td:nth-child(4) { width: 20%; }
+  .player-list-fpo th:nth-child(4), .player-list-fpo td:nth-child(4) { width: 14%; }
+  .player-list th:nth-child(5), .player-list td:nth-child(5),
+  .player-list-fpo th:nth-child(5), .player-list-fpo td:nth-child(5) { width: 18%; }
 }

@@ -1,5 +1,15 @@
 const playerNBMListMpo = new Map();
 const playerNBMListFpo = new Map();
+const countryNames = {
+  DK: "Denmark",
+  EE: "Estonia",
+  FI: "Finland",
+  IS: "Iceland",
+  LV: "Latvia",
+  LT: "Lithuania",
+  NO: "Norway",
+  SE: "Sweden"
+};
 
 const tournamentUrls = [
   // Men's division
@@ -18,6 +28,10 @@ const tournamentUrls = [
 
 
 window.addEventListener("load", async () => {
+  document
+    .getElementById("countryFilter")
+    ?.addEventListener("change", renderPlayerList);
+
   await Promise.all(
     tournamentUrls.map(fetchTournamentPlayers)
   );
@@ -56,6 +70,9 @@ async function fetchTournamentPlayers(url) {
       const name = player.Name ?? "—";
       const pdgaNum = String(player.PDGANum ?? "");
       const rating = player.Rating ?? null;
+      const country = normalizeCountryCode(
+        player.Country ?? player.CountryCode ?? player.country ?? player.countryCode
+      );
 
       if (
         rating === null ||
@@ -68,17 +85,17 @@ async function fetchTournamentPlayers(url) {
       const playerData = {
         name,
         pdgaNum,
-        rating
+        rating,
+        country
       };
 
-      if (isFDivision) {
-        if (!playerNBMListFpo.has(pdgaNum)) {
-          playerNBMListFpo.set(pdgaNum, playerData);
-        }
-      } else {
-        if (!playerNBMListMpo.has(pdgaNum)) {
-          playerNBMListMpo.set(pdgaNum, playerData);
-        }
+      const playerList = isFDivision ? playerNBMListFpo : playerNBMListMpo;
+      const existingPlayer = playerList.get(pdgaNum);
+
+      if (!existingPlayer) {
+        playerList.set(pdgaNum, playerData);
+      } else if (!existingPlayer.country && country) {
+        existingPlayer.country = country;
       }
     }
 
@@ -95,18 +112,28 @@ async function fetchTournamentPlayers(url) {
 function renderPlayerList() {
   const listDiv = document.getElementById("playerList");
   const listDivFpo = document.getElementById("playerListFpo");
+  const countryFilter = document.getElementById("countryFilter");
+  const allPlayers = [
+    ...playerNBMListMpo.values(),
+    ...playerNBMListFpo.values()
+  ];
+
+  populateCountryFilter(countryFilter, allPlayers);
+  const selectedCountry = countryFilter?.value ?? "";
 
   const mpoPlayers = Array.from(playerNBMListMpo.values())
+    .filter(player => !selectedCountry || player.country === selectedCountry)
     .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
 
   const fpoPlayers = Array.from(playerNBMListFpo.values())
+    .filter(player => !selectedCountry || player.country === selectedCountry)
     .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
 
 
   if (!mpoPlayers.length) {
     listDiv.innerHTML = `
       <p style="font-weight:bold;">
-        No player data found.
+        ${selectedCountry ? "No Men players found for this country." : "No player data found."}
       </p>
     `;
   } else {
@@ -117,6 +144,7 @@ function renderPlayerList() {
             <th>#</th>
             <th>Name</th>
             <th>PDGA</th>
+            <th>Country</th>
             <th>Rating</th>
           </tr>
         </thead>
@@ -130,7 +158,7 @@ function renderPlayerList() {
   if (!fpoPlayers.length) {
     listDivFpo.innerHTML = `
       <p style="font-weight:bold;">
-        No Women division players found.
+        ${selectedCountry ? "No Women players found for this country." : "No Women division players found."}
       </p>
     `;
   } else {
@@ -141,6 +169,7 @@ function renderPlayerList() {
             <th>#</th>
             <th>Name</th>
             <th>PDGA</th>
+            <th>Country</th>
             <th>Rating</th>
           </tr>
         </thead>
@@ -150,6 +179,33 @@ function renderPlayerList() {
       </table>
     `;
   }
+}
+
+
+function populateCountryFilter(select, players) {
+  if (!select) {
+    return;
+  }
+
+  const selectedCountry = select.value;
+  const countries = [...new Set(players.map(player => player.country).filter(Boolean))]
+    .sort();
+
+  select.innerHTML = `
+    <option value="">All countries</option>
+    ${countries.map(country => `
+      <option value="${country}">${country} - ${countryNames[country] ?? country}</option>
+    `).join("")}
+  `;
+
+  if (countries.includes(selectedCountry)) {
+    select.value = selectedCountry;
+  }
+}
+
+function normalizeCountryCode(value) {
+  const country = String(value ?? "").trim().toUpperCase();
+  return /^[A-Z]{2}$/.test(country) ? country : "";
 }
 
 
@@ -167,6 +223,7 @@ function createRows(players) {
         </a>
       </td>
       <td>${player.pdgaNum || "—"}</td>
+      <td>${player.country || "—"}</td>
       <td>${player.rating ?? "—"}</td>
     </tr>
   `).join("");

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Deaf PDGA Rating Ranking</title>
+  <link rel="icon" type="image/svg+xml" href="worlddeaf-icon.svg">
+  <link rel="stylesheet" type="text/css" href="worlddeaf_style.css">
+  <script src="worlddeaf_script.js" defer></script>
+</head>
+<body>
+<main class="page-shell">
+  <header class="page-header">
+    <div class="header-copy">
+      <h1>World Deaf PDGA Rating Ranking</h1>
+    </div>
+    <a href="index.html" class="btn"><span class="btn-arrow" aria-hidden="true">←</span> <span class="btn-flag" role="img" aria-label="Swedish flag"></span> Sweden ranking</a>
+  </header>
+
+  <div class="ranking-filters">
+    <label class="country-filter" for="countryFilter">
+      Country
+      <select id="countryFilter">
+        <option value="">All countries</option>
+      </select>
+    </label>
+  </div>
+
+  <section class="tables-container" aria-label="World Deaf PDGA rating ranking">
+    <div class="ranking-panel">
+      <div class="section-heading"><h2>Men</h2></div>
+      <div class="player-list" id="playerList"></div>
+    </div>
+    <div class="ranking-panel ranking-panel-fpo">
+      <div class="section-heading"><h2>Women</h2></div>
+      <div class="player-list-fpo" id="playerListFpo"></div>
+    </div>
+  </section>
+
+  <footer class="footer-text">
+    <p>Sources: World Deaf PDGA events with published PDGA results.</p>
+    <nav aria-label="Sources">
+      <a href="https://www.pdga.com/tour/event/19499" target="_blank" rel="noopener noreferrer">19499</a>
+      <a href="https://www.pdga.com/tour/event/17849" target="_blank" rel="noopener noreferrer">17849</a>
+      <a href="https://www.pdga.com/tour/event/14665" target="_blank" rel="noopener noreferrer">14665</a>
+      <a href="https://www.pdga.com/tour/event/13148" target="_blank" rel="noopener noreferrer">13148</a>
+      <a href="https://www.pdga.com/tour/event/13220" target="_blank" rel="noopener noreferrer">13220</a>
+      <a href="https://www.pdga.com/tour/event/11480" target="_blank" rel="noopener noreferrer">11480</a>
+      <a href="https://www.pdga.com/tour/event/11206" target="_blank" rel="noopener noreferrer">11206</a>
+      <a href="https://www.pdga.com/tour/event/10251" target="_blank" rel="noopener noreferrer">10251</a>
+      <a href="https://www.pdga.com/tour/event/7093" target="_blank" rel="noopener noreferrer">7093</a>
+      <a href="https://www.pdga.com/tour/event/4537" target="_blank" rel="noopener noreferrer">4537</a>
+      <a href="https://www.pdga.com/tour/event/3782" target="_blank" rel="noopener noreferrer">3782</a>
+      <a href="https://www.pdga.com/tour/event/105180" target="_blank" rel="noopener noreferrer">105180</a>
+      <a href="https://www.pdga.com/tour/event/93562" target="_blank" rel="noopener noreferrer">93562</a>
+      <a href="https://www.pdga.com/tour/event/92384" target="_blank" rel="noopener noreferrer">92384</a>
+      <a href="https://www.pdga.com/tour/event/87762" target="_blank" rel="noopener noreferrer">87762</a>
+      <a href="https://www.pdga.com/tour/event/88312" target="_blank" rel="noopener noreferrer">88312</a>
+      <a href="https://www.pdga.com/tour/event/84301" target="_blank" rel="noopener noreferrer">84301</a>
+      <a href="https://www.pdga.com/tour/event/85115" target="_blank" rel="noopener noreferrer">85115</a>
+      <a href="https://www.pdga.com/tour/event/82717" target="_blank" rel="noopener noreferrer">82717</a>
+      <a href="https://www.pdga.com/tour/event/77104" target="_blank" rel="noopener noreferrer">77104</a>
+      <a href="https://www.pdga.com/tour/event/80590" target="_blank" rel="noopener noreferrer">80590</a>
+      <a href="https://www.pdga.com/tour/event/77153" target="_blank" rel="noopener noreferrer">77153</a>
+      <a href="https://www.pdga.com/tour/event/68176" target="_blank" rel="noopener noreferrer">68176</a>
+      <a href="https://www.pdga.com/tour/event/65679" target="_blank" rel="noopener noreferrer">65679</a>
+      <a href="https://www.pdga.com/tour/event/68076" target="_blank" rel="noopener noreferrer">68076</a>
+      <a href="https://www.pdga.com/tour/event/65957" target="_blank" rel="noopener noreferrer">65957</a>
+      <a href="https://www.pdga.com/tour/event/60047" target="_blank" rel="noopener noreferrer">60047</a>
+      <a href="https://www.pdga.com/tour/event/57517" target="_blank" rel="noopener noreferrer">57517</a>
+      <a href="https://www.pdga.com/tour/event/61835" target="_blank" rel="noopener noreferrer">61835</a>
+      <a href="https://www.pdga.com/tour/event/55604" target="_blank" rel="noopener noreferrer">55604</a>
+      <a href="https://www.pdga.com/tour/event/60887" target="_blank" rel="noopener noreferrer">60887</a>
+      <a href="https://www.pdga.com/tour/event/55750" target="_blank" rel="noopener noreferrer">55750</a>
+      <a href="https://www.pdga.com/tour/event/48767" target="_blank" rel="noopener noreferrer">48767</a>
+      <a href="https://www.pdga.com/tour/event/49835" target="_blank" rel="noopener noreferrer">49835</a>
+      <a href="https://www.pdga.com/tour/event/39561" target="_blank" rel="noopener noreferrer">39561</a>
+      <a href="https://www.pdga.com/tour/event/36928" target="_blank" rel="noopener noreferrer">36928</a>
+      <a href="https://www.pdga.com/tour/event/35206" target="_blank" rel="noopener noreferrer">35206</a>
+      <a href="https://www.pdga.com/tour/event/35337" target="_blank" rel="noopener noreferrer">35337</a>
+      <a href="https://www.pdga.com/tour/event/35138" target="_blank" rel="noopener noreferrer">35138</a>
+      <a href="https://www.pdga.com/tour/event/32138" target="_blank" rel="noopener noreferrer">32138</a>
+      <a href="https://www.pdga.com/tour/event/26450" target="_blank" rel="noopener noreferrer">26450</a>
+      <a href="https://www.pdga.com/tour/event/107613" target="_blank" rel="noopener noreferrer">107613</a>
+    </nav>
+  </footer>
+</main>
+</body>
+</html>
