@@ -1,32 +1,44 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NBM - Player ranking</title>
+  <title>Nordic &amp; Baltic Deaf Discgolf Championship Ranking</title>
   <link rel="icon" type="image/x-icon" href="nbmflags.png">
   <link rel="stylesheet" type="text/css" href="nbm_style.css">
   <script src="nbm_script.js" defer></script>
 
 </head>
 <body>
+<main class="page-shell">
+  <header class="page-header">
+    <div class="header-copy">
+      <h1>Nordic &amp; Baltic Deaf Discgolf Championship Ranking</h1>
+      <p class="page-intro">PDGA ratings for players who have competed in NBDDC events.</p>
+    </div>
+    <a href="index.html" class="btn"><span class="btn-arrow" aria-hidden="true">←</span> Sweden ranking</a>
+  </header>
 
-<div class="tables-container">
-  <div class="player-list" id="playerList"></div>
-  <div class="player-list-fpo" id="playerListFpo"></div>
-</div>
+  <section class="tables-container" aria-label="Nordic and Baltic Deaf Discgolf Championship rankings">
+    <div class="ranking-panel">
+      <div class="section-heading"><h2>Men</h2></div>
+      <div class="player-list" id="playerList"></div>
+    </div>
+    <div class="ranking-panel ranking-panel-fpo">
+      <div class="section-heading"><h2>Women</h2></div>
+      <div class="player-list-fpo" id="playerListFpo"></div>
+    </div>
+  </section>
 
-<div class="button-container">
-  <a href="index.html" class="btn">Return to homepage</a>
-</div>
-
-<footer class="footer-text">
-  Only players who participated in NBM tournaments and have a PDGA rating are shown from:<br>
-  
-  <a href="https://www.pdga.com/tour/event/107613" target="_blank">https://www.pdga.com/tour/event/107613</a><br>
-  <a href="https://www.pdga.com/tour/event/85115" target="_blank">https://www.pdga.com/tour/event/85115</a><br>
-  <a href="https://www.pdga.com/tour/event/61835" target="_blank">https://www.pdga.com/tour/event/61835</a><br>
-  <a href="https://www.pdga.com/tour/event/39561" target="_blank">https://www.pdga.com/tour/event/39561</a>
-</footer>
+  <footer class="footer-text">
+    <p>Sources: NBDDC tournaments with published PDGA results.</p>
+    <nav aria-label="Sources">
+      <a href="https://www.pdga.com/tour/event/107613" target="_blank" rel="noopener noreferrer">107613 - Talsi, Latvia - 2026</a>
+      <a href="https://www.pdga.com/tour/event/85115" target="_blank" rel="noopener noreferrer">85115 - Gudhjem, Denmark - 2024</a>
+      <a href="https://www.pdga.com/tour/event/61835" target="_blank" rel="noopener noreferrer">61835 - Vänersborg, Sweden - 2022</a>
+      <a href="https://www.pdga.com/tour/event/39561" target="_blank" rel="noopener noreferrer">39561 - Helsinki, Finland - 2019</a>
+    </nav>
+  </footer>
+</main>
 </body>
 </html>

@@ -4,7 +4,7 @@ const playerPdgaId = new Set([
   "92342", "98755", "99121", "106897", "107746", "107488",
   "107764", "114085", "183456", "200855", "220960",
   "231698", "247940", "250501", "253259", "259085",
-  "261443", "289988", "292238", "324942"
+  "261443", "289988", "292238", "324942", "330780"
 ]);
 
 const playerList = new Map();
@@ -58,6 +58,11 @@ const requests = [
     type: "player",
     url: "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=104367&Division=FA3",
     pdgaNum: "324942"
+  },
+    {
+    type: "player",
+    url: "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=105939&Division=FA3",
+    pdgaNum: "330780"
   },
   {
     type: "player",
@@ -131,7 +136,7 @@ async function fetchRequest(request) {
     }
 
   } catch (error) {
-    console.error("Kunde inte hämta:", request.url, error);
+    console.error("Could not fetch:", request.url, error);
   }
 }
 
@@ -187,8 +192,7 @@ function renderPlayerList() {
   if (!players.length) {
     listDiv.innerHTML = `
       <p style="font-weight:bold;">
-        ⚠️ Inga spelardata hittades.
-        Kolla konsolen (F12) för mer info.
+        Inga spelardata hittades. Kontrollera konsolen för mer information.
       </p>
     `;
     return;
@@ -218,9 +222,9 @@ function renderPlayerList() {
       <thead>
         <tr>
           <th>#</th>
-          <th>Name</th>
-          <th>PDGA #</th>
-          <th>Rating</th>
+          <th>Namn</th>
+          <th>PDGA-nr</th>
+          <th>Betyg</th>
         </tr>
       </thead>
       <tbody>

@@ -2,14 +2,14 @@ const playerNBMListMpo = new Map();
 const playerNBMListFpo = new Map();
 
 const tournamentUrls = [
-  // MPO
+  // Men's division
   "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=61835&Division=MPO",
   "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=39561&Division=MA1",
   "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=39561&Division=MPO",
   "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=85115&Division=MA1",
   "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=107613&Division=MPO",
 
-  // FPO
+  // Women's division
   "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=61835&Division=FPO",
   "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=39561&Division=FPO",
   "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=85115&Division=FA1",
@@ -84,7 +84,7 @@ async function fetchTournamentPlayers(url) {
 
   } catch (err) {
     console.error(
-      "Fel vid hämtning av spelare:",
+      "Could not fetch player data:",
       url,
       err
     );
@@ -106,7 +106,7 @@ function renderPlayerList() {
   if (!mpoPlayers.length) {
     listDiv.innerHTML = `
       <p style="font-weight:bold;">
-        ⚠️ Inga spelardata hittades.⚠️
+        No player data found.
       </p>
     `;
   } else {
@@ -114,7 +114,7 @@ function renderPlayerList() {
       <table>
         <thead>
           <tr>
-            <th>#MPO</th>
+            <th>#</th>
             <th>Name</th>
             <th>PDGA</th>
             <th>Rating</th>
@@ -130,7 +130,7 @@ function renderPlayerList() {
   if (!fpoPlayers.length) {
     listDivFpo.innerHTML = `
       <p style="font-weight:bold;">
-        ⚠️ Inga F-divisionsspelare hittades.⚠️
+        No Women division players found.
       </p>
     `;
   } else {
@@ -138,7 +138,7 @@ function renderPlayerList() {
       <table>
         <thead>
           <tr>
-            <th>#FPO</th>
+            <th>#</th>
             <th>Name</th>
             <th>PDGA</th>
             <th>Rating</th>
