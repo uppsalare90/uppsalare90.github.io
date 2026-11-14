@@ -96,10 +96,20 @@ const playerCacheSignature = JSON.stringify({
 	requests,
 	playerPdgaIds: Array.from(playerPdgaId).sort()
 });
+const loadingScreenTimeoutMs = 10000;
+const playerRenderDebounceMs = 250;
+let playerRenderTimeout;
 
 window.addEventListener("load", async () => {
 	const loadingScreen = document.getElementById("loadingScreen");
 	let failedRequestCount = 0;
+	const loadingTimeout = setTimeout(() => {
+		if (loadingScreen) {
+			loadingScreen.hidden = true;
+		}
+		showLoadingDelayMessage();
+		renderPlayerList();
+	}, loadingScreenTimeoutMs);
 
 	try {
 		const cachedPlayers = window.pdgaRankingCache.load(
@@ -138,6 +148,9 @@ window.addEventListener("load", async () => {
 		renderPlayerList();
 		showRequestFailureMessage(failedRequestCount);
 	} finally {
+		clearTimeout(loadingTimeout);
+		clearTimeout(playerRenderTimeout);
+		playerRenderTimeout = null;
 		if (loadingScreen) {
 			loadingScreen.hidden = true;
 		}
@@ -145,16 +158,37 @@ window.addEventListener("load", async () => {
 });
 
 function showRequestFailureMessage(failedRequestCount) {
-	if (!failedRequestCount) {
+	const status = document.getElementById("requestStatus");
+	if (!status) {
 		return;
 	}
 
+	if (!failedRequestCount) {
+		status.textContent = "";
+		status.hidden = true;
+		return;
+	}
+
+	status.textContent =
+		`${failedRequestCount} dataanrop misslyckades. Rankningen kan vara ofullständig. Ladda om sidan för att försöka igen.`;
+	status.hidden = false;
+}
+
+function showLoadingDelayMessage() {
 	const status = document.getElementById("requestStatus");
 	if (status) {
 		status.textContent =
-			`${failedRequestCount} dataanrop misslyckades. Rankningen kan vara ofullständig. Ladda om sidan för att försöka igen.`;
+			"Data hämtas fortfarande. Rankningen uppdateras när fler resultat kommer in.";
 		status.hidden = false;
 	}
+}
+
+function schedulePlayerListRender() {
+	clearTimeout(playerRenderTimeout);
+	playerRenderTimeout = setTimeout(() => {
+		playerRenderTimeout = null;
+		renderPlayerList();
+	}, playerRenderDebounceMs);
 }
 
 
@@ -184,6 +218,7 @@ async function fetchRequest(request) {
 
 			if (player) {
 				addPlayer(player);
+				schedulePlayerListRender();
 			}
 
 			return true;
@@ -193,6 +228,7 @@ async function fetchRequest(request) {
 			addPlayer(player);
 		}
 
+		schedulePlayerListRender();
 		return true;
 	} catch (error) {
 		console.error("Could not fetch:", request.url, error);

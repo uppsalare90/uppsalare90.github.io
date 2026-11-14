@@ -28,9 +28,19 @@ const tournamentUrls = [
 
 const fetchRetryAttempts = 3;
 const fetchRetryDelayMs = 1000;
+const loadingScreenTimeoutMs = 10000;
+const playerRenderDebounceMs = 250;
+let playerRenderTimeout;
 
 window.addEventListener("load", async () => {
   const loadingScreen = document.getElementById("loadingScreen");
+  const loadingTimeout = setTimeout(() => {
+    if (loadingScreen) {
+      loadingScreen.hidden = true;
+    }
+    showLoadingDelayMessage();
+    renderPlayerList();
+  }, loadingScreenTimeoutMs);
 
   try {
     document
@@ -44,6 +54,9 @@ window.addEventListener("load", async () => {
     renderPlayerList();
     showRequestFailureMessage(requestResults.filter(success => !success).length);
   } finally {
+    clearTimeout(loadingTimeout);
+    clearTimeout(playerRenderTimeout);
+    playerRenderTimeout = null;
     if (loadingScreen) {
       loadingScreen.hidden = true;
     }
@@ -51,16 +64,37 @@ window.addEventListener("load", async () => {
 });
 
 function showRequestFailureMessage(failedRequestCount) {
-  if (!failedRequestCount) {
+  const status = document.getElementById("requestStatus");
+  if (!status) {
     return;
   }
 
+  if (!failedRequestCount) {
+    status.textContent = "";
+    status.hidden = true;
+    return;
+  }
+
+  status.textContent =
+    `${failedRequestCount} data requests failed. The ranking may be incomplete. Reload the page to retry.`;
+  status.hidden = false;
+}
+
+function showLoadingDelayMessage() {
   const status = document.getElementById("requestStatus");
   if (status) {
     status.textContent =
-      `${failedRequestCount} data requests failed. The ranking may be incomplete. Reload the page to retry.`;
+      "Data is still loading. The ranking will update as more results arrive.";
     status.hidden = false;
   }
+}
+
+function schedulePlayerListRender() {
+  clearTimeout(playerRenderTimeout);
+  playerRenderTimeout = setTimeout(() => {
+    playerRenderTimeout = null;
+    renderPlayerList();
+  }, playerRenderDebounceMs);
 }
 
 async function fetchTournamentPlayers(url) {
@@ -148,6 +182,7 @@ async function fetchTournamentPlayers(url) {
     }
   }
 
+  schedulePlayerListRender();
   return true;
 }
 
