@@ -7,7 +7,8 @@ const playerPdgaId = new Set([
 	"261443", "289988", "292238", "324942", "330780"
 ]);
 
-const playerList = new Map();
+const playerListMen = new Map();
+const playerListWomen = new Map();
 
 const requests = [
 	{
@@ -91,7 +92,7 @@ const requests = [
 	}
 ];
 
-const playerCacheKey = "pdga-index-ranking-v1";
+const playerCacheKey = "pdga-index-ranking-v2";
 const playerCacheSignature = JSON.stringify({
 	requests,
 	playerPdgaIds: Array.from(playerPdgaId).sort()
@@ -118,11 +119,17 @@ window.addEventListener("load", async () => {
 		);
 
 		if (
-			Array.isArray(cachedPlayers) &&
-			cachedPlayers.every(player => player && typeof player.pdgaNum === "string")
+			cachedPlayers &&
+			Array.isArray(cachedPlayers.men) &&
+			Array.isArray(cachedPlayers.women) &&
+			[...cachedPlayers.men, ...cachedPlayers.women]
+				.every(player => player && typeof player.pdgaNum === "string")
 		) {
-			for (const player of cachedPlayers) {
-				playerList.set(player.pdgaNum, player);
+			for (const player of cachedPlayers.men) {
+				playerListMen.set(player.pdgaNum, player);
+			}
+			for (const player of cachedPlayers.women) {
+				playerListWomen.set(player.pdgaNum, player);
 			}
 		} else {
 			if (cachedPlayers !== null) {
@@ -138,7 +145,10 @@ window.addEventListener("load", async () => {
 				window.pdgaRankingCache.save(
 					playerCacheKey,
 					playerCacheSignature,
-					Array.from(playerList.values())
+					{
+						men: Array.from(playerListMen.values()),
+						women: Array.from(playerListWomen.values())
+					}
 				);
 			} else {
 				console.error("Local player cache was not updated because some requests failed.");
@@ -217,7 +227,7 @@ async function fetchRequest(request) {
 			);
 
 			if (player) {
-				addPlayer(player);
+				addPlayer(player, request.url);
 				schedulePlayerListRender();
 			}
 
@@ -225,7 +235,7 @@ async function fetchRequest(request) {
 		}
 
 		for (const player of scores) {
-			addPlayer(player);
+			addPlayer(player, request.url);
 		}
 
 		schedulePlayerListRender();
@@ -237,7 +247,7 @@ async function fetchRequest(request) {
 }
 
 
-function addPlayer(player) {
+function addPlayer(player, requestUrl) {
 	const pdgaNum = String(
 		player.PDGANum ??
 		player.pdga_number ??
@@ -263,6 +273,12 @@ function addPlayer(player) {
 		return;
 	}
 
+	const divisionMatch = requestUrl.match(/Division=([A-Za-z0-9]+)/);
+	const division = divisionMatch ? divisionMatch[1].toUpperCase() : "";
+	const playerList = division.startsWith("F")
+		? playerListWomen
+		: playerListMen;
+
 	if (playerList.has(pdgaNum)) {
 		return;
 	}
@@ -276,8 +292,12 @@ function addPlayer(player) {
 
 
 function renderPlayerList() {
-	const listDiv = document.getElementById("playerList");
+	renderPlayerTable("playerListMen", playerListMen, "Inga herrspelare hittades.");
+	renderPlayerTable("playerListWomen", playerListWomen, "Inga damspelare hittades.");
+}
 
+function renderPlayerTable(listId, playerList, emptyMessage) {
+	const listDiv = document.getElementById(listId);
 	if (!listDiv) {
 		return;
 	}
@@ -288,7 +308,7 @@ function renderPlayerList() {
 	if (!players.length) {
 		listDiv.innerHTML = `
 			<p style="font-weight:bold;">
-				Inga spelardata hittades. Kontrollera konsolen för mer information.
+				${emptyMessage}
 			</p>
 		`;
 		return;
@@ -320,7 +340,7 @@ function renderPlayerList() {
 					<th>#</th>
 					<th>Namn</th>
 					<th>PDGA-nr</th>
-					<th>Betyg</th>
+					<th>Rating</th>
 				</tr>
 			</thead>
 			<tbody>

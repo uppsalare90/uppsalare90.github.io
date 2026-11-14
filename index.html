@@ -41,13 +41,22 @@
 
     <div id="requestStatus" class="request-status" role="status" aria-live="polite" hidden></div>
 
-    <section class="ranking-section" aria-label="Spelarranking">
-      <div class="section-heading">
-        <h2>Rankning</h2>
-        <p>Aktiva spelare med PDGA-rating</p>
-      </div>
-      <div class="player-list" id="playerList"></div>
-    </section>
+    <div class="ranking-sections">
+      <section class="ranking-section" aria-label="Rankning för herrar">
+        <div class="section-heading">
+          <h2>Herrar</h2>
+          <p>Endast aktiva spelare med rating visas i listan.</p>
+        </div>
+        <div class="player-list" id="playerListMen"></div>
+      </section>
+      <section class="ranking-section ranking-section-women" aria-label="Rankning för damer">
+        <div class="section-heading">
+          <h2>Damer</h2>
+          <p>Endast aktiva spelare med rating visas i listan.</p>
+        </div>
+        <div class="player-list player-list-women" id="playerListWomen"></div>
+      </section>
+    </div>
 
     <footer class="footer-text">
       Data hämtas från IK Adils Open och andra tävlingar. Endast aktiva spelare med rating visas i listan.
