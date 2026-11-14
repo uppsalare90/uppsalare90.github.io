@@ -6,16 +6,24 @@
   <title>Nordic &amp; Baltic Deaf Discgolf Championship Ranking</title>
   <link rel="icon" type="image/x-icon" href="nbmflags.png">
   <link rel="stylesheet" type="text/css" href="nbm_style.css">
+  <link rel="stylesheet" type="text/css" href="loading.css">
   <script src="nbm_script.js" defer></script>
 
 </head>
 <body>
+<div id="loadingScreen" class="loading-screen" role="status" aria-live="polite">
+  <div class="loading-card">
+    <span class="loading-spinner" aria-hidden="true"></span>
+    <span>Loading ranking data...</span>
+  </div>
+</div>
 <main class="page-shell">
   <header class="page-header">
     <div class="header-copy">
       <h1>Nordic &amp; Baltic Deaf Discgolf Championship Ranking</h1>
       <p class="page-intro">PDGA ratings for players who have competed in NBDDC events.</p>
     </div>
+    <a href="worlddeaf.html" class="btn"><img src="worlddeaf-icon.svg" class="btn-icon" alt="" aria-hidden="true"> World ranking</a>
     <a href="index.html" class="btn"><span class="btn-arrow" aria-hidden="true">←</span> <span class="btn-flag" role="img" aria-label="Swedish flag"></span> Sweden ranking</a>
   </header>
 
@@ -27,6 +35,8 @@
       </select>
     </label>
   </div>
+
+  <div id="requestStatus" class="request-status" role="status" aria-live="polite" hidden></div>
 
   <section class="tables-container" aria-label="Nordic and Baltic Deaf Discgolf Championship rankings">
     <div class="ranking-panel">

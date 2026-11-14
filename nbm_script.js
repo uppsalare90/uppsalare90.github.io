@@ -26,86 +26,129 @@ const tournamentUrls = [
   "https://www.pdga.com/apps/tournament/live-api/live_results_fetch_round?TournID=107613&Division=FPO"
 ];
 
+const fetchRetryAttempts = 3;
+const fetchRetryDelayMs = 1000;
 
 window.addEventListener("load", async () => {
-  document
-    .getElementById("countryFilter")
-    ?.addEventListener("change", renderPlayerList);
+  const loadingScreen = document.getElementById("loadingScreen");
 
-  await Promise.all(
-    tournamentUrls.map(fetchTournamentPlayers)
-  );
+  try {
+    document
+      .getElementById("countryFilter")
+      ?.addEventListener("change", renderPlayerList);
 
-  renderPlayerList();
+    const requestResults = await Promise.all(
+      tournamentUrls.map(fetchTournamentPlayers)
+    );
+
+    renderPlayerList();
+    showRequestFailureMessage(requestResults.filter(success => !success).length);
+  } finally {
+    if (loadingScreen) {
+      loadingScreen.hidden = true;
+    }
+  }
 });
 
+function showRequestFailureMessage(failedRequestCount) {
+  if (!failedRequestCount) {
+    return;
+  }
+
+  const status = document.getElementById("requestStatus");
+  if (status) {
+    status.textContent =
+      `${failedRequestCount} data requests failed. The ranking may be incomplete. Reload the page to retry.`;
+    status.hidden = false;
+  }
+}
 
 async function fetchTournamentPlayers(url) {
-  try {
-    const resp = await fetch(url, {
-      headers: {
-        Accept: "application/json"
+  let scores;
+
+  for (let attempt = 1; attempt <= fetchRetryAttempts; attempt++) {
+    try {
+      const resp = await fetch(url, {
+        headers: {
+          Accept: "application/json"
+        }
+      });
+
+      if (!resp.ok) {
+        throw new Error(`Felaktig statuskod: ${resp.status}`);
       }
-    });
 
-    if (!resp.ok) {
-      throw new Error(`Felaktig statuskod: ${resp.status}`);
-    }
+      const data = await resp.json();
+      if (!Array.isArray(data?.data?.scores)) {
+        throw new Error("Svaret innehåller ingen giltig scores-lista.");
+      }
 
-    const data = await resp.json();
-    const scores = data?.data?.scores;
+      scores = data.data.scores;
+      break;
+    } catch (err) {
+      if (attempt === fetchRetryAttempts) {
+        console.error(
+          "Kunde inte hämta spelardata efter flera försök:",
+          url,
+          err
+        );
+        return false;
+      }
 
-    if (!Array.isArray(scores) || !scores.length) {
-      return;
-    }
-
-    const divisionMatch = url.match(/Division=([A-Za-z0-9]+)/);
-    const division = divisionMatch
-      ? divisionMatch[1].toUpperCase()
-      : "";
-
-    const isFDivision = division.startsWith("F");
-
-    for (const player of scores) {
-      const name = player.Name ?? "—";
-      const pdgaNum = String(player.PDGANum ?? "");
-      const rating = player.Rating ?? null;
-      const country = normalizeCountryCode(
-        player.Country ?? player.CountryCode ?? player.country ?? player.countryCode
+      console.warn(
+        `API-anrop misslyckades; försöker igen om ${fetchRetryDelayMs} ms (${attempt}/${fetchRetryAttempts - 1} återförsök):`,
+        url,
+        err
       );
+      await new Promise(resolve => setTimeout(resolve, fetchRetryDelayMs));
+    }
+  }
 
-      if (
-        rating === null ||
-        rating === "" ||
-        isNaN(rating)
-      ) {
-        continue;
-      }
+  if (!scores.length) {
+    return true;
+  }
 
-      const playerData = {
-        name,
-        pdgaNum,
-        rating,
-        country
-      };
+  const divisionMatch = url.match(/Division=([A-Za-z0-9]+)/);
+  const division = divisionMatch
+    ? divisionMatch[1].toUpperCase()
+    : "";
 
-      const playerList = isFDivision ? playerNBMListFpo : playerNBMListMpo;
-      const existingPlayer = playerList.get(pdgaNum);
+  const isFDivision = division.startsWith("F");
 
-      if (!existingPlayer) {
-        playerList.set(pdgaNum, playerData);
-      } else if (!existingPlayer.country && country) {
-        existingPlayer.country = country;
-      }
+  for (const player of scores) {
+    const name = player.Name ?? "—";
+    const pdgaNum = String(player.PDGANum ?? "");
+    const rating = player.Rating ?? null;
+    const country = normalizeCountryCode(
+      player.Country ?? player.CountryCode ?? player.country ?? player.countryCode
+    );
+
+    if (
+      rating === null ||
+      rating === "" ||
+      isNaN(rating)
+    ) {
+      continue;
     }
 
-  } catch (err) {
-    console.error(
-      "Could not fetch player data:",
-      url,
-      err
-    );
+    const playerData = {
+      name,
+      pdgaNum,
+      rating,
+      country
+    };
+
+    const playerList = isFDivision ? playerNBMListFpo : playerNBMListMpo;
+    const existingPlayer = playerList.get(pdgaNum);
+
+    if (!existingPlayer) {
+      playerList.set(pdgaNum, playerData);
+    } else if (!existingPlayer.country && country) {
+      existingPlayer.country = country;
+    }
   }
+
+  return true;
 }
 
 

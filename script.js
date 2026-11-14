@@ -91,13 +91,71 @@ const requests = [
 	}
 ];
 
-window.addEventListener("load", async () => {
-	await Promise.all(
-		requests.map(request => fetchRequest(request))
-	);
-
-	renderPlayerList();
+const playerCacheKey = "pdga-index-ranking-v1";
+const playerCacheSignature = JSON.stringify({
+	requests,
+	playerPdgaIds: Array.from(playerPdgaId).sort()
 });
+
+window.addEventListener("load", async () => {
+	const loadingScreen = document.getElementById("loadingScreen");
+	let failedRequestCount = 0;
+
+	try {
+		const cachedPlayers = window.pdgaRankingCache.load(
+			playerCacheKey,
+			playerCacheSignature
+		);
+
+		if (
+			Array.isArray(cachedPlayers) &&
+			cachedPlayers.every(player => player && typeof player.pdgaNum === "string")
+		) {
+			for (const player of cachedPlayers) {
+				playerList.set(player.pdgaNum, player);
+			}
+		} else {
+			if (cachedPlayers !== null) {
+				console.error("Invalid cached player data; fetching fresh data.");
+			}
+
+			const requestResults = await Promise.all(
+				requests.map(request => fetchRequest(request))
+			);
+			failedRequestCount = requestResults.filter(success => !success).length;
+
+			if (requestResults.every(Boolean)) {
+				window.pdgaRankingCache.save(
+					playerCacheKey,
+					playerCacheSignature,
+					Array.from(playerList.values())
+				);
+			} else {
+				console.error("Local player cache was not updated because some requests failed.");
+			}
+		}
+
+		renderPlayerList();
+		showRequestFailureMessage(failedRequestCount);
+	} finally {
+		if (loadingScreen) {
+			loadingScreen.hidden = true;
+		}
+	}
+});
+
+function showRequestFailureMessage(failedRequestCount) {
+	if (!failedRequestCount) {
+		return;
+	}
+
+	const status = document.getElementById("requestStatus");
+	if (status) {
+		status.textContent =
+			`${failedRequestCount} dataanrop misslyckades. Rankningen kan vara ofullständig. Ladda om sidan för att försöka igen.`;
+		status.hidden = false;
+	}
+}
 
 
 async function fetchRequest(request) {
@@ -116,7 +174,7 @@ async function fetchRequest(request) {
 		const scores = data?.data?.scores;
 
 		if (!Array.isArray(scores)) {
-			return;
+			return false;
 		}
 
 		if (request.type === "player") {
@@ -128,15 +186,17 @@ async function fetchRequest(request) {
 				addPlayer(player);
 			}
 
-			return;
+			return true;
 		}
 
 		for (const player of scores) {
 			addPlayer(player);
 		}
 
+		return true;
 	} catch (error) {
 		console.error("Could not fetch:", request.url, error);
+		return false;
 	}
 }
 

@@ -6,10 +6,18 @@
   <title>PDGA-ratingranking för svenska döva discgolfspelare</title>
   <link rel="icon" type="image/x-icon" href="swedenteam.png">
   <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="loading.css">
+  <script src="pdga_cache.js" defer></script>
   <script src="script.js" defer></script>
 
 </head>
 <body>
+  <div id="loadingScreen" class="loading-screen" role="status" aria-live="polite">
+    <div class="loading-card">
+      <span class="loading-spinner" aria-hidden="true"></span>
+      <span>Laddar ranking...</span>
+    </div>
+  </div>
   <main class="page-shell">
     <header class="page-header">
       <div class="header-copy">
@@ -30,6 +38,8 @@
         </a>
       </div>
     </header>
+
+    <div id="requestStatus" class="request-status" role="status" aria-live="polite" hidden></div>
 
     <section class="ranking-section" aria-label="Spelarranking">
       <div class="section-heading">
